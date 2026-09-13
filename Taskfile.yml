@@ -4,22 +4,22 @@ tasks:
   lint:
     desc: Run golangci-lint
     cmds:
-      - golangci-lint run ./...
+      - golangci-lint run ./plugin/...
 
   test:
     desc: Run tests with coverage
     cmds:
-      - go test ./... -coverprofile=coverage.out
+      - go test ./plugin/... -coverprofile=coverage.out
 
   build:
     desc: Run the complete local validation and snapshot build
     cmds:
       - go mod tidy
-      - golangci-lint run ./...
-      - govulncheck ./...
-      - go vet ./...
+      - golangci-lint run ./plugin/...
+      - govulncheck ./plugin/...
+      - go vet ./plugin/...
       - gofmt -l .
-      - go test ./... -coverprofile=coverage.out
+      - go test ./plugin/... -coverprofile=coverage.out
       - goreleaser build --snapshot --clean
 
   release:

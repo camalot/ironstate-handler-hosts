@@ -6,17 +6,7 @@ The sample exposes the `ensure_entry` handler, so its fully qualified playbook k
 
 ## Development
 
-This directory is an independent Go module, just like a plugin hosted in its own repository. The local `replace` directive in `go.mod` points at this checkout's SDK so the sample can be tested while the SDK is changing.
-
-For local development, keep the repositories beside each other:
-
-```text
-github/
-├── ironstate/
-└── ironstate-handler-hosts/
-```
-
-The plugin's `go.mod` resolves `github.com/TacoContent/ironstate/sdk` from `../ironstate/sdk`. GitHub Actions checks out the main `ironstate` repository into an `ironstate/` sibling directory and applies the equivalent temporary replacements before linting, testing, or packaging.
+This directory is an independent Go module, just like a plugin hosted in its own repository. The SDK is currently a nested module in the ironstate repository and has not yet been published with an `sdk/v*` tag, so local development uses a sibling checkout and CI checks out the remote ironstate repository into `./ironstate` before applying equivalent replacements. Once the SDK receives a nested-module tag, these replacements can be removed and `go.mod` can pin that published SDK version directly.
 
 ```shell
 go test ./...

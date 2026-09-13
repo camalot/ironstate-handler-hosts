@@ -27,9 +27,11 @@ jobs:
         with:
           go-version-file: go.mod
       - run: go mod edit -replace github.com/TacoContent/ironstate/sdk=./ironstate/sdk -replace github.com/TacoContent/ironstate=./ironstate
+      - run: go mod tidy
       - uses: golangci/golangci-lint-action@v9
         with:
           version: latest
+          args: ./plugin/...
 
   test:
     permissions:
@@ -52,8 +54,9 @@ jobs:
         with:
           go-version-file: go.mod
       - run: go mod edit -replace github.com/TacoContent/ironstate/sdk=./ironstate/sdk -replace github.com/TacoContent/ironstate=./ironstate
-      - run: go build ./...
-      - run: go test ./... -coverprofile=coverage.out
+      - run: go mod tidy
+      - run: go build ./plugin/...
+      - run: go test ./plugin/... -coverprofile=coverage.out
       - uses: actions/upload-artifact@v7
         with:
           name: coverage-${{ matrix.os }}
@@ -77,9 +80,10 @@ jobs:
         with:
           go-version-file: go.mod
       - run: go mod edit -replace github.com/TacoContent/ironstate/sdk=./ironstate/sdk -replace github.com/TacoContent/ironstate=./ironstate
-      - run: go vet ./...
+      - run: go mod tidy
+      - run: go vet ./plugin/...
       - run: go install golang.org/x/vuln/cmd/govulncheck@latest
-      - run: govulncheck ./...
+      - run: govulncheck ./plugin/...
 
   build-snapshot:
     permissions:
@@ -99,6 +103,7 @@ jobs:
         with:
           go-version-file: go.mod
       - run: go mod edit -replace github.com/TacoContent/ironstate/sdk=./ironstate/sdk -replace github.com/TacoContent/ironstate=./ironstate
+      - run: go mod tidy
       - uses: goreleaser/goreleaser-action@v7
         with:
           distribution: goreleaser
