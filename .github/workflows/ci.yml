@@ -1,0 +1,105 @@
+name: ci
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+
+permissions: {}
+
+jobs:
+  lint:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@v7
+        with:
+          repository: TacoContent/ironstate
+          path: ironstate
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - run: go mod edit -replace github.com/TacoContent/ironstate/sdk=./ironstate/sdk -replace github.com/TacoContent/ironstate=./ironstate
+      - uses: golangci/golangci-lint-action@v9
+        with:
+          version: latest
+
+  test:
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@v7
+        with:
+          repository: TacoContent/ironstate
+          path: ironstate
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - run: go mod edit -replace github.com/TacoContent/ironstate/sdk=./ironstate/sdk -replace github.com/TacoContent/ironstate=./ironstate
+      - run: go build ./...
+      - run: go test ./... -coverprofile=coverage.out
+      - uses: actions/upload-artifact@v7
+        with:
+          name: coverage-${{ matrix.os }}
+          path: coverage.out
+
+  vet-and-vuln:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@v7
+        with:
+          repository: TacoContent/ironstate
+          path: ironstate
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - run: go mod edit -replace github.com/TacoContent/ironstate/sdk=./ironstate/sdk -replace github.com/TacoContent/ironstate=./ironstate
+      - run: go vet ./...
+      - run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - run: govulncheck ./...
+
+  build-snapshot:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@v7
+        with:
+          repository: TacoContent/ironstate
+          path: ironstate
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - run: go mod edit -replace github.com/TacoContent/ironstate/sdk=./ironstate/sdk -replace github.com/TacoContent/ironstate=./ironstate
+      - uses: goreleaser/goreleaser-action@v7
+        with:
+          distribution: goreleaser
+          version: latest
+          args: build --snapshot --clean

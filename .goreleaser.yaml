@@ -1,0 +1,85 @@
+version: 2
+
+project_name: ironstate-handler-hosts
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: ironstate-handler-hosts
+    main: ./plugin
+    binary: ironstate-handler-hosts
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.ShortCommit}}
+      - -X main.date={{.Date}}
+
+archives:
+  - id: ironstate-handler-hosts
+    formats: [zip]
+    format_overrides:
+      - goos: linux
+        formats: [tar.gz]
+      - goos: darwin
+        formats: [tar.gz]
+    # Files land at the archive root (ironstate.exe, not
+    # ironstate_<version>_<os>_<arch>/ironstate.exe) - explicit rather than
+    # relying on goreleaser's own default.
+    wrap_in_directory: false
+    files:
+      - README.md
+      - LICENSE*
+
+checksum:
+  name_template: checksums.txt
+
+# Keyless cosign signing of the checksums file (covers every archive via
+# its hash list) via GitHub Actions OIDC identity — docs/plans/go-rewrite.md
+# §8. Requires `cosign` on the runner (installed by
+# sigstore/cosign-installer in .github/workflows/release.yml) and
+# `id-token: write` permission on the workflow.
+#
+# cosign v3's 'sign-blob' dropped '--output-signature'/'--output-certificate'
+# (deprecated, silently ignored) in favor of a single '--bundle' file
+# combining both - matches goreleaser's own documented cosign recipe
+# (https://goreleaser.com/customization/sign/sign/#signing-with-cosign).
+# Verify with: cosign verify-blob --bundle checksums.txt.sigstore.json checksums.txt
+signs:
+  - cmd: cosign
+    signature: "${artifact}.sigstore.json"
+    args:
+      - sign-blob
+      - "--bundle=${signature}"
+      - "${artifact}"
+      - "--yes"
+    artifacts: checksum
+    output: true
+
+# SBOM per artifact — docs/plans/go-rewrite.md §7. Requires `syft` on the
+# runner (installed via anchore/sbom-action/download-syft in
+# .github/workflows/release.yml).
+sboms:
+  - id: ironstate-sbom
+    artifacts: archive
+
+snapshot:
+  version_template: "{{ .Tag }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"

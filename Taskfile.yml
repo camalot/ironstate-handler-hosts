@@ -1,0 +1,29 @@
+version: '3'
+
+tasks:
+  lint:
+    desc: Run golangci-lint
+    cmds:
+      - golangci-lint run ./...
+
+  test:
+    desc: Run tests with coverage
+    cmds:
+      - go test ./... -coverprofile=coverage.out
+
+  build:
+    desc: Run the complete local validation and snapshot build
+    cmds:
+      - go mod tidy
+      - golangci-lint run ./...
+      - govulncheck ./...
+      - go vet ./...
+      - gofmt -l .
+      - go test ./... -coverprofile=coverage.out
+      - goreleaser build --snapshot --clean
+
+  release:
+    desc: Build a release locally without publishing
+    cmds:
+      - go mod tidy
+      - goreleaser release --clean --skip=publish,sign,sbom
