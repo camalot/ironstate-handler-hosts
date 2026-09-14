@@ -12,19 +12,6 @@ on:
 permissions: {}
 
 jobs:
-  verify:
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0 # needed for goreleaser's changelog generation
-          persist-credentials: false # avoid exposing GITHUB_TOKEN to submodules
-
-      - uses: ./.github/actions/verify-sha256
-
-
   version:
     permissions:
       contents: read
@@ -40,8 +27,6 @@ jobs:
       tag_major: ${{ steps.get.outputs.tag_major }}
       tag_major_minor: ${{ steps.get.outputs.tag_major_minor }}
       tag_major_minor_patch: ${{ steps.get.outputs.tag_major_minor_patch }}
-    needs:
-      - verify
     steps:
       - uses: actions/checkout@v7
         with:
@@ -64,7 +49,6 @@ jobs:
       attestations: write
     runs-on: ubuntu-latest
     needs:
-      - verify
       - version
     steps:
       - uses: actions/checkout@v7
