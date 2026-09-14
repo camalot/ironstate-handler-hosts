@@ -2,8 +2,15 @@ name: ci
 
 on:
   push:
-    branches: 
-      - main
+    branches:
+      - "*"
+    tags-ignore: 
+      - "*"
+    paths-ignore:
+      - ".github/**"
+      - "docs/**"
+      - "*.md"
+      - cliff.toml
   pull_request:
 
 permissions: {}
