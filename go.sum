@@ -1,5 +1,5 @@
-github.com/TacoContent/ironstate/sdk v0.4.0 h1:47HWMgr8JuaaUXLxJItu4ow42uXNk0K9mPINsAw1j4Y=
-github.com/TacoContent/ironstate/sdk v0.4.0/go.mod h1:QAPVkdzHANAf16EfeiElP8HJCPR4XuOsoLU9O0bZaN0=
+github.com/TacoContent/ironstate/sdk v0.4.1 h1:qJj9ph+OWVUf1eV2nHmzngJlMH8dNO/5TvvZGca1/cc=
+github.com/TacoContent/ironstate/sdk v0.4.1/go.mod h1:QAPVkdzHANAf16EfeiElP8HJCPR4XuOsoLU9O0bZaN0=
 github.com/bufbuild/protocompile v0.14.1 h1:iA73zAf/fyljNjQKwYzUHD6AD4R8KMasmwa/FBatYVw=
 github.com/bufbuild/protocompile v0.14.1/go.mod h1:ppVdAIhbr2H8asPk6k4pY7t9zB1OU5DoEw9xY/FUi1c=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=
