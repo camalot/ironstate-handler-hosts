@@ -25,6 +25,10 @@ playbooks/
 
 .*.taskfile.yml
 
+go.work
+go.work.sum
+ironstate-handler-*.exe
+
 
 # Created by https://www.toptal.com/developers/gitignore/api/windows,powershell,visualstudiocode,go
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,powershell,visualstudiocode,go

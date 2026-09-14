@@ -1,8 +1,8 @@
-module github.com/acme/ironstate-handler-hosts
+module github.com/camalot/ironstate-handler-hosts
 
 go 1.27.0
 
-require github.com/TacoContent/ironstate/sdk v0.0.0
+require github.com/TacoContent/ironstate/sdk v0.4.0
 
 require (
 	github.com/fatih/color v1.13.0 // indirect
@@ -20,10 +20,3 @@ require (
 	google.golang.org/grpc v1.83.2 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 )
-
-// The SDK is a nested module in the ironstate repository and is not yet
-// published with an sdk/v* module tag. Local development uses a sibling
-// checkout; CI rewrites these paths to its remote ironstate checkout.
-replace github.com/TacoContent/ironstate/sdk => ../ironstate/sdk
-
-replace github.com/TacoContent/ironstate => ../ironstate
