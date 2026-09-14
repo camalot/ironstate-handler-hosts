@@ -55,7 +55,7 @@ jobs:
           go-version-file: go.mod
       - run: go mod edit -replace github.com/TacoContent/ironstate/sdk=./ironstate/sdk -replace github.com/TacoContent/ironstate=./ironstate
       - run: go mod tidy
-      - run: go build ./plugin/...
+      - run: go build -o bin/ ./plugin/...
       - run: go test ./plugin/... -coverprofile=coverage.out
       - uses: actions/upload-artifact@v7
         with:
