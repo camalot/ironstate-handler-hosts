@@ -1,4 +1,4 @@
-package main
+package hosts
 
 import (
 	"os"
@@ -15,7 +15,7 @@ func testItem(path string) map[string]any {
 
 func TestHostsHandlerInstallTestAndUninstallAreIdempotent(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "hosts")
-	h := hostsHandler{}
+	h := EntryHandler{}
 	item := testItem(path)
 
 	satisfied, err := h.Test(item, "", handler.Context{})
@@ -59,7 +59,7 @@ func TestHostsHandlerPreservesCommentsAndReplacesHostname(t *testing.T) {
 	}
 	item := testItem(path)
 	item["ip"] = "192.0.2.20"
-	if _, err := (hostsHandler{}).Install(item, "", handler.Context{}); err != nil {
+	if _, err := (EntryHandler{}).Install(item, "", handler.Context{}); err != nil {
 		t.Fatalf("Install returned error: %v", err)
 	}
 	contents, err := os.ReadFile(path) //nolint:gosec // path is a t.TempDir()-derived fixture created by this test
@@ -77,7 +77,7 @@ func TestHostsHandlerFactProducerAndScan(t *testing.T) {
 	if err := os.WriteFile(path, []byte("10.0.0.12 build.local\n"), 0o644); err != nil { //nolint:gosec // test fixture under t.TempDir()
 		t.Fatal(err)
 	}
-	h := hostsHandler{}
+	h := EntryHandler{}
 	name, ok := h.FactName(map[string]any{"name": "$build_host"})
 	if name != "build_host" || !ok {
 		t.Fatalf("FactName = %q, %v", name, ok)
@@ -92,7 +92,7 @@ func TestHostsHandlerFactProducerAndScan(t *testing.T) {
 }
 
 func TestHostsHandlerRejectsMissingFields(t *testing.T) {
-	if _, err := (hostsHandler{}).Test(map[string]any{"hostname": "build.local"}, "", handler.Context{}); err == nil {
+	if _, err := (EntryHandler{}).Test(map[string]any{"hostname": "build.local"}, "", handler.Context{}); err == nil {
 		t.Fatal("Test accepted missing ip")
 	}
 }

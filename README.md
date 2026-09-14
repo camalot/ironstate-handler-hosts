@@ -10,7 +10,7 @@ This directory is an independent Go module, just like a plugin hosted in its own
 
 ```shell
 go test ./...
-go build -o ironstate-handler-hosts ./plugin
+go build -o ironstate-handler-hosts .
 ```
 
 The same checks can be run through Task:
@@ -21,7 +21,7 @@ task build
 
 This runs `golangci-lint`, `govulncheck`, `go vet`, tests with coverage, and a GoReleaser snapshot build.
 
-The plugin binary is served with `sdk/plugin.Serve` and is compatible with the repository's `internal/pluginhost` loader. It can be launched directly by `ironstate plugin install` after publishing the module under its final module path.
+The root `main.go` only wires the plugin process and re-entry command. Handlers and fact providers live under `internal/`, so additional handlers can be added without growing the command entry point.
 
 ## Handler item
 

@@ -8,7 +8,7 @@ before:
 
 builds:
   - id: ironstate-handler-hosts
-    main: ./plugin
+    main: .
     binary: ironstate-handler-hosts
     env:
       - CGO_ENABLED=0
