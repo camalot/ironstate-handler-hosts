@@ -38,7 +38,7 @@ jobs:
         uses: camalot/actions/version/get@v1
         with:
           default_version: v1.0.0
-          fail_on_default: true
+          fail_on_default: false
           fail_on_same_version: true
           token: ${{ github.token }}
 
