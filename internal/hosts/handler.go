@@ -11,6 +11,8 @@ type EntryHandler struct{}
 
 func (EntryHandler) Emoji() string { return "📇" }
 
+func (EntryHandler) RequiredTools() []string { return []string{} }
+
 func (EntryHandler) Test(item map[string]any, _ string, ctx handler.Context) (bool, error) {
 	if expression, ok := item["callback_condition"].(string); ok && expression != "" {
 		if ctx.Callbacks == nil {

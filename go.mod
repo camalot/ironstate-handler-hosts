@@ -2,7 +2,7 @@ module github.com/camalot/ironstate-handler-hosts
 
 go 1.27.0
 
-require github.com/TacoContent/ironstate/sdk v0.4.1
+require github.com/TacoContent/ironstate/sdk v0.4.2
 
 require (
 	github.com/fatih/color v1.13.0 // indirect
