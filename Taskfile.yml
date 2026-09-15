@@ -27,3 +27,19 @@ tasks:
     cmds:
       - go mod tidy
       - goreleaser release --clean --skip=publish,sign,sbom
+
+  plugin:stage:
+    desc: Build this plugin and stage it into ironstate's per-user plugin cache for local testing
+    vars:
+      VERSION: '{{.VERSION | default "v0.0.0-dev"}}'
+      BINARY: 'dist/ironstate-handler-hosts{{if eq OS "windows"}}.exe{{end}}'
+    cmds:
+      - go build -o {{.BINARY}} .
+      - go run ./tools/stagelocal stage --org camalot --name hosts --version {{.VERSION}} --binary {{.BINARY}} --handlers entry
+
+  plugin:unstage:
+    desc: Remove the staged local dev build of this plugin from ironstate's plugin cache
+    vars:
+      VERSION: '{{.VERSION | default "v0.0.0-dev"}}'
+    cmds:
+      - go run ./tools/stagelocal unstage --org camalot --name hosts --version {{.VERSION}}

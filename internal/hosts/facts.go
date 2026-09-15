@@ -27,12 +27,21 @@ func (EntryHandler) Scan(ctx handler.Context) ([]handler.ScanItem, error) {
 		return nil, err
 	}
 	items := make([]handler.ScanItem, 0)
+	seen := make(map[string]bool)
 	for _, line := range lines {
 		fields := strings.Fields(line)
 		if len(fields) < 2 || strings.HasPrefix(fields[0], "#") {
 			continue
 		}
 		for _, hostname := range fields[1:] {
+			if strings.HasPrefix(hostname, "#") {
+				break
+			}
+			key := fields[0] + "\x00" + hostname
+			if seen[key] {
+				continue
+			}
+			seen[key] = true
 			items = append(items, handler.ScanItem{
 				Module: "entry",
 				Name:   hostname,

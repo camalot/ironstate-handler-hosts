@@ -13,6 +13,7 @@ func readLines(path string) ([]string, error) {
 		return nil, err
 	}
 	text := strings.ReplaceAll(string(contents), "\r\n", "\n")
+	text = strings.TrimPrefix(text, "\ufeff")
 	text = strings.TrimSuffix(text, "\n")
 	if text == "" {
 		return []string{}, nil
