@@ -72,6 +72,9 @@ func (EntryHandler) Install(item map[string]any, _ string, ctx handler.Context) 
 	}
 	lines = removeHostname(lines, spec.Hostname)
 	lines = append(lines, spec.Entry)
+	if spec.Comment != "" {
+		lines = append(lines, "# "+spec.Comment)
+	}
 	if err := writeLines(spec.Path, lines, ctx.Become); err != nil {
 		return failedResult(err), err
 	}
@@ -90,7 +93,7 @@ func (EntryHandler) Uninstall(item map[string]any, _ string, ctx handler.Context
 	if err != nil {
 		return failedResult(err), err
 	}
-	filtered := removeMapping(lines, spec.IP, spec.Hostname)
+	filtered := removeMapping(lines, spec.IP, spec.Hostname, spec.Comment)
 	if len(filtered) == len(lines) {
 		return handler.ExecResult{RC: 0}, nil
 	}
