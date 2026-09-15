@@ -74,7 +74,7 @@ func TestHostsHandlerPreservesCommentsAndReplacesHostname(t *testing.T) {
 
 func TestHostsHandlerFactProducerAndScan(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "hosts")
-	if err := os.WriteFile(path, []byte("10.0.0.12 build.local\n"), 0o644); err != nil { //nolint:gosec // test fixture under t.TempDir()
+	if err := os.WriteFile(path, []byte("\uFEFF# ignored comment\n10.0.0.12 build.local\n"), 0o644); err != nil { //nolint:gosec // test fixture under t.TempDir()
 		t.Fatal(err)
 	}
 	h := EntryHandler{}

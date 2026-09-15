@@ -42,11 +42,15 @@ func hasMapping(lines []string, ip, hostname string) bool {
 	return false
 }
 
-func removeMapping(lines []string, ip, hostname string) []string {
+func removeMapping(lines []string, ip, hostname string, comment string) []string {
 	filtered := make([]string, 0, len(lines))
 	for _, line := range lines {
 		fields := strings.Fields(line)
 		if len(fields) >= 2 && fields[0] == ip && contains(fields[1:], hostname) {
+			continue
+		}
+		// Remove lines that match the comment
+		if comment != "" && strings.HasPrefix(strings.TrimSpace(line), "# "+comment) {
 			continue
 		}
 		filtered = append(filtered, line)

@@ -13,6 +13,7 @@ type hostSpec struct {
 	IP       string
 	Hostname string
 	Entry    string
+	Comment  string
 }
 
 func parseSpec(item map[string]any) (hostSpec, error) {
@@ -25,7 +26,9 @@ func parseSpec(item map[string]any) (hostSpec, error) {
 	if strings.TrimSpace(ip) == "" || strings.TrimSpace(hostname) == "" {
 		return hostSpec{}, fmt.Errorf("hosts handler requires non-empty 'ip' and 'hostname'")
 	}
-	return hostSpec{Path: path, IP: strings.TrimSpace(ip), Hostname: strings.TrimSpace(hostname), Entry: strings.TrimSpace(ip) + " " + strings.TrimSpace(hostname)}, nil
+	comment, _ := item["comment"].(string)
+	// comment is optional and will be added as a line starting with "# " if provided
+	return hostSpec{Path: path, IP: strings.TrimSpace(ip), Hostname: strings.TrimSpace(hostname), Entry: strings.TrimSpace(ip) + " " + strings.TrimSpace(hostname), Comment: strings.TrimSpace(comment)}, nil
 }
 
 func defaultHostsPath() string {
